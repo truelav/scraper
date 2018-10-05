@@ -3,113 +3,98 @@ var fs = require('fs');
 const rp = require('request-promise');
 var request = require('request');
 var $ = require('cheerio');
+const puppeteer = require('puppeteer');
 var app = express();
 
 
-const options = {
-    uri: 'https://www.'
-}
-
 
 app.get('/scrape', function(req, res){
+
+    url = 'https://www.centerbmw.com/used-inventory/index.htm?start=16&'
     
-    //all web scraping magic will happene here
-
-    url = 'https://en.wikipedia.org/wiki/List_of_Presidents_of_the_United_States'
-
-    //the structure of our request call
-    //the first parameter is our URL
-    // the callback function takes 3 parameters, error, response status and html code
-
-
-    rp(url)
-        .then(  function(html){
-            const wikiUrls = [];
-            for (let i = 0; i < 45; i++){
-                wikiUrls.push($('big > a', html)[i].attribs.href);
-            }
-            console.log(wikiUrls)
+    puppeteer
+        .launch()
+        .then (function(browser) {
+            return browser.newPage();
         })
-        .catch( function(err){
-            //handle err
+        .then( function(page) {
+            return page.goto(url).then(function(){
+                return page.content();
+            })
+        })
+        .then( function(html) {
+           return $('.url', html).each(function() {
+                console.log($(this).text())
+            })
+        })
+        .then( function(data){
+            console.log(typeof data)
+        })
+        .catch(function(err){
             console.log(err)
         })
 
-    // request(url, function(error, response, html){
-
-    //     //first we check to make sure no errors
-
-    //     if(!error){
-    //         //next well utilize the ceerios library on the return html
-
-
-    //         //finally well define the variables were gonna capture
-
+  
     //         var inventory, release, rating
     //         var make, model, year, price, mileage, stock, vin, bodystyle, interior, transmission, exterior, media
 
-            // var rawData = {
-            //     inventory: [
-            //         {
-            //             make: '',
-            //             model: '',
-            //             year: '',
-            //             price: '',
-            //             mileage: '',
-            //             stock: '',
-            //             vin: '',
-            //             bodystyle: '',
-            //             interior: '',
-            //             transmission: '',
-            //             exterior: '',
-            //             media: ''
-            //         }
-            //     ]
-            // }
+    // var rawData = {
+    //     inventory: [
+    //         {
+    //             make: '',
+    //             model: '',
+    //             year: '',
+    //             price: '',
+    //             mileage: '',
+    //             stock: '',
+    //             vin: '',
+    //             bodystyle: '',
+    //             interior: '',
+    //             transmission: '',
+    //             exterior: '',
+    //             media: ''
+    //         }
+    //     ]
+    // }
 
-            // var json = {
-                
-            //     bmw: {
+    // var json = {
+        
+    //     bmw: {
 
-            //         '1-series': {
+    //         '1-series': {
 
-            //         },
-            //         '2-series': {
+    //         },
+    //         '2-series': {
 
-            //         },
-            //         '3-series': {
+    //         },
+    //         '3-series': {
 
-            //         },
-            //         '4-series': {
+    //         },
+    //         '4-series': {
 
-            //         },
-            //         '5-series': {
+    //         },
+    //         '5-series': {
 
-            //         },
-            //         '6-series': {
+    //         },
+    //         '6-series': {
 
-            //         },
-            //         '7-series': {
+    //         },
+    //         '7-series': {
 
-            //         },
-            //         '8-series': {
+    //         },
+    //         '8-series': {
 
-            //         },
-            //         'x-series': {
+    //         },
+    //         'x-series': {
 
-            //         },
-            //         'z-series': {
+    //         },
+    //         'z-series': {
 
-            //         },
-                    
-            //     },
-
-            // }
+    //         },
             
-            
-        // }
+    //     },
 
-    // })
+    // }
 
 })
 
