@@ -12,6 +12,9 @@ app.get('/scrape', function(req, res){
 
     url = 'https://www.centerbmw.com/used-inventory/index.htm?start=16&'
     
+
+    var make, model, year, price, mileage, stock, vin, bodystyle, interior, transmission, exterior, media 
+
     puppeteer
         .launch()
         .then (function(browser) {
@@ -23,8 +26,11 @@ app.get('/scrape', function(req, res){
             })
         })
         .then( function(html) {
-           return $('.url', html).each(function() {
-                console.log($(this).text())
+           var inventory = []
+           return $('[data-type="certified"]', html).each(function() {
+                inventory.push($(this).text())
+                //console.log($(this).text())
+                console.log(inventory)
             })
         })
         .then( function(data){
@@ -35,8 +41,6 @@ app.get('/scrape', function(req, res){
         })
 
   
-    //         var inventory, release, rating
-    //         var make, model, year, price, mileage, stock, vin, bodystyle, interior, transmission, exterior, media
 
     // var rawData = {
     //     inventory: [
