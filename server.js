@@ -13,6 +13,7 @@ app.get('/scrape', function(req, res){
     url = 'https://www.centerbmw.com/used-inventory/index.htm?start=16&'
     
 
+    var inventory = []
     var make, model, year, price, mileage, stock, vin, bodystyle, interior, transmission, exterior, media 
 
     puppeteer
@@ -26,38 +27,45 @@ app.get('/scrape', function(req, res){
             })
         })
         .then( function(html) {
-           var inventory = []
+    
            return $('[data-type="certified"]', html).each(function() {
-                inventory.push($(this).text())
-                //console.log($(this).text())
-                console.log(inventory)
+
+               //console.log($(this).find('.msrp').text())
+
+               inventory.push(
+                   {
+                       make: this.attribs['data-make'],
+                       model: this.attribs['data-model'],
+                       year: this.attribs['data-year'],
+                       type: this.attribs['data-type'],
+                       vin: this.attribs['data-vin'],
+                       bodystyle: this.attribs['data-bodystyle'],
+                       exteriorcolor: this.attribs['data-exteriorcolor'],
+                       price: $(this).find('.internetPrice').text(),
+                       msrp: $(this).find('.msrp').text(),
+                   }
+               )
+
+               
+                //arr.push($(this).text())
+
+
             })
         })
-        .then( function(data){
-            console.log(typeof data)
+        .then( function(inve){
+            console.log(inve)
+            console.log(inventory)
         })
         .catch(function(err){
             console.log(err)
         })
 
   
+        
 
     // var rawData = {
     //     inventory: [
-    //         {
-    //             make: '',
-    //             model: '',
-    //             year: '',
-    //             price: '',
-    //             mileage: '',
-    //             stock: '',
-    //             vin: '',
-    //             bodystyle: '',
-    //             interior: '',
-    //             transmission: '',
-    //             exterior: '',
-    //             media: ''
-    //         }
+
     //     ]
     // }
 
@@ -99,6 +107,7 @@ app.get('/scrape', function(req, res){
     //     },
 
     // }
+    res.send(inventory)
 
 })
 
