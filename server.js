@@ -32,6 +32,10 @@ app.get('/scrape', function(req, res){
 
                //console.log($(this).find('.msrp').text())
 
+               //console.log('this is the miles' + $(this).find('.last').first().text())
+               let str = $(this).find('.last').first().text()  
+               let arr = str.split(' ')
+        
                inventory.push(
                    {
                        make: this.attribs['data-make'],
@@ -39,10 +43,14 @@ app.get('/scrape', function(req, res){
                        year: this.attribs['data-year'],
                        type: this.attribs['data-type'],
                        vin: this.attribs['data-vin'],
+                       mileage: arr[2],
                        bodystyle: this.attribs['data-bodystyle'],
                        exteriorcolor: this.attribs['data-exteriorcolor'],
                        price: $(this).find('.internetPrice').text(),
                        msrp: $(this).find('.msrp').text(),
+                       hwyMPG: arr[5],
+                       cityMpg: arr[8]
+
                    }
                )
 
@@ -53,7 +61,7 @@ app.get('/scrape', function(req, res){
             })
         })
         .then( function(inve){
-            console.log(inve)
+            //console.log(inve)
             console.log(inventory)
         })
         .catch(function(err){
@@ -61,54 +69,6 @@ app.get('/scrape', function(req, res){
         })
 
   
-        
-
-    // var rawData = {
-    //     inventory: [
-
-    //     ]
-    // }
-
-    // var json = {
-        
-    //     bmw: {
-
-    //         '1-series': {
-
-    //         },
-    //         '2-series': {
-
-    //         },
-    //         '3-series': {
-
-    //         },
-    //         '4-series': {
-
-    //         },
-    //         '5-series': {
-
-    //         },
-    //         '6-series': {
-
-    //         },
-    //         '7-series': {
-
-    //         },
-    //         '8-series': {
-
-    //         },
-    //         'x-series': {
-
-    //         },
-    //         'z-series': {
-
-    //         },
-            
-    //     },
-
-    // }
-    res.send(inventory)
-
 })
 
 app.listen('8081')
